@@ -18,7 +18,7 @@ body:
       options:
         - label: "I made sure that there are *no existing issues* - [open](https://github.com/mikhkz/SmartTube/issues) or [closed](https://github.com/mikhkz/SmartTube/issues?q=is%3Aissue+is%3Aclosed) - which I could contribute my information to."
           required: true
-        - label: "I have read the [FAQ](https://github.com/mikhkz/SmartTube#как-включить-перевод) and my problem isn't listed."
+        - label: "I have read the [FAQ](https://github.com/mikhkz/SmartTube#русская-озвучка-видео) and my problem isn't listed."
           required: true
         - label: "I have taken the time to fill in all the required details. I understand that the bug report will be dismissed otherwise."
           required: true

@@ -22,10 +22,15 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: gradle
+      - name: Set up Android SDK tools
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407
+        with:
+          packages: ''
+          log-accepted-android-sdk-licenses: 'false'
       - name: Prepare Android SDK
         run: |
           sdkmanager 'platforms;android-34' 'build-tools;30.0.3'
-          printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
+          printf 'sdk.dir=%s\n' "${ANDROID_SDK_ROOT:-$ANDROID_HOME}" > local.properties
       - name: Build VOT and test native integration
         run: >-
           bash gradlew --no-daemon --max-workers=2
