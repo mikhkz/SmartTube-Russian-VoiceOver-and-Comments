@@ -157,6 +157,11 @@ public class EmbedPlayerView extends PlayerView implements PlaybackView {
     }
 
     @Override
+    public void updateVoiceTranslatePendingEta(int remainingTimeSec) {
+
+    }
+
+    @Override
     public void setChannelIcon(String iconUrl) {
 
     }
@@ -448,6 +453,13 @@ public class EmbedPlayerView extends PlayerView implements PlaybackView {
     public void setVolume(float volume) {
         if (!mIsMute && mExoPlayerController != null) {
             mExoPlayerController.setVolume(volume);
+        }
+    }
+
+    @Override
+    public void setVoiceOverMix(boolean enabled, float originalVolumeMultiplier) {
+        if (mExoPlayerController != null) {
+            mExoPlayerController.setVoiceOverMix(enabled, originalVolumeMultiplier);
         }
     }
 

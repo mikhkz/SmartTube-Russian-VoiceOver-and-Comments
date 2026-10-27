@@ -42,6 +42,7 @@ public interface PlayerEngine extends PlayerConstants {
     float getPitch();
     void setVolume(float volume);
     float getVolume();
+    void setVoiceOverMix(boolean enabled, float originalVolumeMultiplier);
     void setResizeMode(int mode);
     int getResizeMode();
     void setZoomPercents(int percents);

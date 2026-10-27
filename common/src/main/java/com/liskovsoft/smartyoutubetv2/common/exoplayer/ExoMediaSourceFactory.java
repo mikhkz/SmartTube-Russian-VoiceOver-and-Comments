@@ -115,6 +115,10 @@ public class ExoMediaSourceFactory {
      *                          DataSource factory.
      * @return A new DataSource factory.
      */
+    public DataSource.Factory createAudioDownloadDataSourceFactory() {
+        return buildDataSourceFactory(false);
+    }
+
     private DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter) {
         return buildDataSourceFactory(useBandwidthMeter, (int) OkHttpManager.getReadTimeoutMs());
     }

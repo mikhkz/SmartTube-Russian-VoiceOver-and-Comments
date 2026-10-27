@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for helping to make SmartTube better by reporting a bug.
+        Thank you for helping to make SmartTube VOT better by reporting a bug.
 
         Please fill in as much information as possible about your bug.
 
@@ -16,9 +16,9 @@ body:
     attributes:
       label: "Checklist"
       options:
-        - label: "I made sure that there are *no existing issues* - [open](https://github.com/yuliskov/SmartTube/issues) or [closed](https://github.com/yuliskov/SmartTube/issues?q=is%3Aissue+is%3Aclosed) - which I could contribute my information to."
+        - label: "I made sure that there are *no existing issues* - [open](https://github.com/mikhkz/SmartTube/issues) or [closed](https://github.com/mikhkz/SmartTube/issues?q=is%3Aissue+is%3Aclosed) - which I could contribute my information to."
           required: true
-        - label: "I have read the [FAQ](https://github.com/yuliskov/SmartTube#faq) and my problem isn't listed."
+        - label: "I have read the [FAQ](https://github.com/mikhkz/SmartTube#как-включить-перевод) and my problem isn't listed."
           required: true
         - label: "I have taken the time to fill in all the required details. I understand that the bug report will be dismissed otherwise."
           required: true

@@ -17,15 +17,25 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.CommentsRece
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.AbstractCommentsReceiver;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.UiOptionItem;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.AppDialogPresenter;
+import com.liskovsoft.smartyoutubetv2.common.prefs.VotData;
+import com.liskovsoft.smartyoutubetv2.common.vot.CommentTranslator;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
+import java.util.List;
 
 public class CommentsController extends BasePlayerController {
     private static final String TAG = CommentsController.class.getSimpleName();
     private Disposable mCommentsAction;
+    private Disposable mTranslateRetryAction;
     private String mLiveChatKey;
     private String mCommentsKey;
     private String mTitle;
     private Pair<String, Backup> mBackup;
+    private boolean mBackupTranslated;
+    private boolean mBackupHasUntranslated;
 
     public CommentsController() {
     }
@@ -43,6 +53,7 @@ public class CommentsController extends BasePlayerController {
         mTitle = metadata != null ? metadata.getTitle() : null;
         if (mBackup != null && !Helpers.equals(mBackup.first, mCommentsKey)) {
             mBackup = null;
+            mBackupHasUntranslated = false;
         }
     }
 
@@ -65,6 +76,14 @@ public class CommentsController extends BasePlayerController {
 
         CommentsReceiver commentsReceiver = new AbstractCommentsReceiver(getContext()) {
             @Override
+            public String getLoadingMessage() {
+                if (isCommentTranslateEnabled() && getContext() != null) {
+                    return getContext().getString(R.string.vot_comments_loading_translating);
+                }
+                return super.getLoadingMessage();
+            }
+
+            @Override
             public void onLoadMore(CommentGroup commentGroup) {
                 if (commentGroup == null) {
                     return;
@@ -75,11 +94,15 @@ public class CommentsController extends BasePlayerController {
 
             @Override
             public void onStart() {
-                if (mBackup != null && Helpers.equals(mBackup.first, mCommentsKey)) {
+                if (mBackup != null
+                        && Helpers.equals(mBackup.first, mCommentsKey)
+                        && mBackupTranslated == isCommentTranslateEnabled()
+                        && (!mBackupTranslated || !mBackupHasUntranslated)) {
                     loadBackup(mBackup.second);
                     return;
                 }
 
+                mBackupHasUntranslated = false;
                 loadComments(this, mCommentsKey);
             }
 
@@ -91,7 +114,19 @@ public class CommentsController extends BasePlayerController {
 
                 CommentsReceiver nestedReceiver = new AbstractCommentsReceiver(getContext()) {
                     @Override
+                    public String getLoadingMessage() {
+                        if (isCommentTranslateEnabled() && getContext() != null) {
+                            return getContext().getString(R.string.vot_comments_loading_translating);
+                        }
+                        return super.getLoadingMessage();
+                    }
+
+                    @Override
                     public void onLoadMore(CommentGroup commentGroup) {
+                        if (commentGroup == null) {
+                            return;
+                        }
+
                         loadComments(this, commentGroup.getNextCommentsKey());
                     }
 
@@ -119,6 +154,7 @@ public class CommentsController extends BasePlayerController {
                 super.onFinish(backup);
                 if (Helpers.equals(backupKey, mCommentsKey)) {
                     mBackup = new Pair<>(mCommentsKey, backup);
+                    mBackupTranslated = isCommentTranslateEnabled();
                 }
             }
         };
@@ -143,6 +179,7 @@ public class CommentsController extends BasePlayerController {
     public void onEngineReleased() {
         disposeActions();
         mBackup = null;
+        mBackupHasUntranslated = false;
     }
 
     @Override
@@ -151,20 +188,76 @@ public class CommentsController extends BasePlayerController {
     }
 
     private void disposeActions() {
-        RxHelper.disposeActions(mCommentsAction);
+        RxHelper.disposeActions(mCommentsAction, mTranslateRetryAction);
     }
 
     private void loadComments(CommentsReceiver receiver, String commentsKey) {
         disposeActions();
 
+        final boolean translateEnabled = isCommentTranslateEnabled();
+
         mCommentsAction = getCommentsService().getCommentsObserve(commentsKey)
+                .observeOn(Schedulers.io())
+                .map(group -> {
+                    if (!translateEnabled || group == null) {
+                        return group;
+                    }
+                    try {
+                        CommentGroup translated = CommentTranslator.instance().translateGroup(group);
+                        return translated != null ? translated : group;
+                    } catch (Throwable error) {
+                        Log.e(TAG, error.getMessage());
+                        return group;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        receiver::addCommentGroup,
+                        group -> {
+                            receiver.addCommentGroup(group);
+                            if (translateEnabled && CommentTranslator.instance().hasUntranslatedComments(group)) {
+                                mBackupHasUntranslated = true;
+                                scheduleRemainingTranslation(receiver, group);
+                            }
+                        },
                         error -> {
                             Log.e(TAG, error.getMessage());
                             receiver.addCommentGroup(null); // remove loading message
                         }
                 );
+    }
+
+    private void scheduleRemainingTranslation(CommentsReceiver receiver, CommentGroup group) {
+        if (group == null || group.getComments() == null) {
+            return;
+        }
+        final List<CommentItem> items = group.getComments();
+        mTranslateRetryAction = Completable.fromAction(() -> {
+            boolean anyStillUntranslated = false;
+            for (CommentItem item : items) {
+                if (item == null || Thread.currentThread().isInterrupted()) {
+                    continue;
+                }
+                String msg = item.getMessage();
+                if (!CommentTranslator.needsTranslation(msg, CommentTranslator.DEFAULT_TARGET_LANGUAGE)) {
+                    continue;
+                }
+                String translated = CommentTranslator.instance().translateText(msg);
+                if (translated != null && !translated.isEmpty() && !translated.equals(msg)) {
+                    final CommentItem updated = CommentTranslator.withTranslatedMessage(item, translated);
+                    AndroidSchedulers.mainThread().scheduleDirect(() -> receiver.sync(updated));
+                } else {
+                    anyStillUntranslated = true;
+                }
+            }
+            if (!anyStillUntranslated) {
+                mBackupHasUntranslated = false;
+            }
+        }).subscribeOn(Schedulers.io()).subscribe(() -> {}, error -> Log.e(TAG, error.getMessage()));
+    }
+
+    private boolean isCommentTranslateEnabled() {
+        Context context = getContext();
+        return context == null || VotData.instance(context).isCommentTranslateEnabled();
     }
 
     private void showDialog(CommentsReceiver receiver, String title) {

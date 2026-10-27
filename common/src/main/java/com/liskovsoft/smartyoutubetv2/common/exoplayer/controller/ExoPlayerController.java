@@ -50,6 +50,11 @@ public class ExoPlayerController implements Player.EventListener {
     private WeakReference<Video> mVideo;
     private final PlayerEventListener mEventListener;
     private SimpleExoPlayer mPlayer;
+    private final com.liskovsoft.smartyoutubetv2.common.vot.VoiceOverVolume mVolume =
+            new com.liskovsoft.smartyoutubetv2.common.vot.VoiceOverVolume();
+    private DefaultTrackSelector mTrackSelector;
+    private boolean mVoiceOverMixEnabled;
+    private int mTunnelingAudioSessionId;
     private PlayerView mPlayerView;
     private VolumeBooster mVolumeBooster;
     private boolean mIsEnded;
@@ -205,6 +210,8 @@ public class ExoPlayerController implements Player.EventListener {
     
     public void setPlayer(SimpleExoPlayer player) {
         mPlayer = player;
+        mVolume.setVolume(player.getVolume());
+        player.setVolume(mVolume.getOutputVolume());
         player.addListener(this);
     }
 
@@ -218,12 +225,15 @@ public class ExoPlayerController implements Player.EventListener {
     }
     
     public void setTrackSelector(DefaultTrackSelector trackSelector) {
+        mTrackSelector = trackSelector;
         mTrackSelectorManager.setTrackSelector(trackSelector);
 
         if (mContext != null && trackSelector != null && PlayerTweaksData.instance(mContext).isTunneledPlaybackEnabled()) {
             // Enable tunneling if supported by the current media and device configuration.
             if (VERSION.SDK_INT >= 21) {
-                trackSelector.setParameters(trackSelector.buildUponParameters().setTunnelingAudioSessionId(C.generateAudioSessionIdV21(mContext)));
+                mTunnelingAudioSessionId = C.generateAudioSessionIdV21(mContext);
+                trackSelector.setParameters(trackSelector.buildUponParameters().setTunnelingAudioSessionId(
+                        mVoiceOverMixEnabled ? C.AUDIO_SESSION_ID_UNSET : mTunnelingAudioSessionId));
             }
         }
     }
@@ -419,15 +429,37 @@ public class ExoPlayerController implements Player.EventListener {
 
     public void setVolume(float volume) {
         if (mPlayer != null && volume >= 0) {
-            mPlayer.setVolume(Math.min(volume, 1f));
+            mVolume.setVolume(volume);
+            mPlayer.setVolume(mVolume.getOutputVolume());
 
             //applyVolumeBoost(volume);
         }
     }
     
+    public void setVoiceOverMix(boolean enabled, float originalVolumeMultiplier) {
+        float previousOutput = mVolume.getOutputVolume();
+        mVolume.setMultiplier(enabled ? originalVolumeMultiplier : 1f);
+        if (mVoiceOverMixEnabled != enabled || previousOutput != mVolume.getOutputVolume()) {
+            Log.d(TAG, "VOT mix enabled=%s base=%s originalOutput=%s", enabled,
+                    mVolume.getVolume(), mVolume.getOutputVolume());
+        }
+        if (mVoiceOverMixEnabled != enabled) {
+            mVoiceOverMixEnabled = enabled;
+            // Tunneled output can bypass per-player gain on TV firmware. Restore the
+            // user's tunneling session when the temporary mix ends.
+            if (mTrackSelector != null) {
+                mTrackSelector.setParameters(mTrackSelector.buildUponParameters()
+                        .setTunnelingAudioSessionId(enabled ? C.AUDIO_SESSION_ID_UNSET : mTunnelingAudioSessionId));
+            }
+        }
+        if (mPlayer != null) {
+            mPlayer.setVolume(mVolume.getOutputVolume());
+        }
+    }
+
     public float getVolume() {
         if (mPlayer != null) {
-            return mPlayer.getVolume();
+            return mVolume.getVolume();
         } else {
             return 1;
         }

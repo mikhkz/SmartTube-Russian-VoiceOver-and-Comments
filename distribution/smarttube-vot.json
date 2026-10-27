@@ -1,0 +1,29 @@
+{
+  "package": {
+    "downloadUrl": "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_universal.apk",
+    "downloadUrlList_armeabi-v7a": [
+      "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_armeabi-v7a.apk"
+    ],
+    "downloadUrlList_arm64-v8a": [
+      "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_arm64-v8a.apk"
+    ],
+    "downloadUrlList_x86": [
+      "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_x86.apk"
+    ]
+  },
+  "32.68-vot.1": {
+    "versionCode": 2459,
+    "changelog": [
+      "SmartTube 32.68 Stable with built-in Russian Yandex voice-over",
+      "Native protocol aligned with VOT 1.12.3 / vot.js 3.2.0",
+      "Independent original and translation volume; playback synchronization",
+      "VOT release update channel"
+    ],
+    "changelog_ru": [
+      "SmartTube 32.68 Stable со встроенной русской озвучкой Яндекса",
+      "Нативный протокол VOT 1.12.3 / vot.js 3.2.0",
+      "Раздельная громкость оригинала и перевода, синхронизация воспроизведения",
+      "Собственный канал обновлений VOT"
+    ]
+  }
+}

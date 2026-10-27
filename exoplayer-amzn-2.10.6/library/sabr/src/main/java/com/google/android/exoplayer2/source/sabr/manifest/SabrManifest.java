@@ -234,6 +234,25 @@ public class SabrManifest implements FilterableManifest<SabrManifest> {
         return Utils.updateQuery(activeStream.getUrl(), "rn", ++sabrRequestNumber);
     }
 
+    /** Download pumps report the complete contiguous range, including time-range-only headers. */
+    public byte[] createAudioDownloadRequestBytes(boolean isInit, long positionMs,
+                                                  long firstSequence, long lastSequence) {
+        VideoPlaybackAbrRequest.Builder request = createVideoPlaybackAbrRequest(
+                C.TRACK_TYPE_AUDIO, isInit, positionMs * 1_000L).toBuilder();
+        FormatId formatId = getFormatSelector(C.TRACK_TYPE_AUDIO).getSelectedFormatId();
+        if (formatId != null && lastSequence >= 0) {
+            request.clearBufferedRanges().addBufferedRanges(BufferedRange.newBuilder()
+                    .setFormatId(formatId)
+                    .setStartSegmentIndex((int) firstSequence)
+                    .setEndSegmentIndex((int) lastSequence)
+                    .setStartTimeMs(0)
+                    .setDurationMs(positionMs)
+                    .setTimeRange(TimeRange.newBuilder().setStartTicks(0)
+                            .setDurationTicks(positionMs).setTimescale(1_000)));
+        }
+        return request.build().toByteArray();
+    }
+
     public VideoPlaybackAbrRequest createVideoPlaybackAbrRequest(int trackType, boolean isInit) {
         return createVideoPlaybackAbrRequest(trackType, isInit, C.TIME_UNSET);
     }

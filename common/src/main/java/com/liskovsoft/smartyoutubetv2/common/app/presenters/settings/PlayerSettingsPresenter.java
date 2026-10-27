@@ -18,6 +18,7 @@ import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerTweaksData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.SearchData;
+import com.liskovsoft.smartyoutubetv2.common.prefs.VotData;
 import com.liskovsoft.smartyoutubetv2.common.utils.AppDialogUtil;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.youtubeapi.service.internal.MediaServiceData;
@@ -32,6 +33,7 @@ public class PlayerSettingsPresenter extends BasePresenter<Void> {
     private final GeneralData mGeneralData;
     private final SidebarService mSidebarService;
     private final MediaServiceData mMediaServiceData;
+    private final VotData mVotData;
     private boolean mRestartApp;
     private final Runnable mOnFinish = () -> {
         if (mRestartApp) {
@@ -48,6 +50,7 @@ public class PlayerSettingsPresenter extends BasePresenter<Void> {
         mGeneralData = GeneralData.instance(context);
         mSidebarService = SidebarService.instance(context);
         mMediaServiceData = MediaServiceData.instance();
+        mVotData = VotData.instance(context);
     }
 
     public static PlayerSettingsPresenter instance(Context context) {
@@ -60,6 +63,7 @@ public class PlayerSettingsPresenter extends BasePresenter<Void> {
         appendPlaybackModeCategory(settingsPresenter);
         appendVideoPresetsCategory(settingsPresenter);
         appendPlayerButtonsCategory(settingsPresenter);
+        appendVotCategory(settingsPresenter);
         appendNetworkEngineCategory(settingsPresenter);
         appendVideoBufferCategory(settingsPresenter);
         appendVideoZoomCategory(settingsPresenter);
@@ -198,12 +202,32 @@ public class PlayerSettingsPresenter extends BasePresenter<Void> {
         settingsPresenter.appendRadioCategory(category.title, category.options);
     }
 
+    private void appendVotCategory(AppDialogPresenter settingsPresenter) {
+        List<OptionItem> votToggles = new ArrayList<>();
+        votToggles.add(UiOptionItem.from(
+                getContext().getString(R.string.vot_lively_voice),
+                getContext().getString(R.string.vot_lively_voice_desc),
+                optionItem -> mVotData.setLivelyVoiceEnabled(optionItem.isSelected()),
+                mVotData.isLivelyVoiceEnabled()));
+        votToggles.add(UiOptionItem.from(
+                getContext().getString(R.string.vot_comment_translate),
+                getContext().getString(R.string.vot_comment_translate_desc),
+                optionItem -> mVotData.setCommentTranslateEnabled(optionItem.isSelected()),
+                mVotData.isCommentTranslateEnabled()));
+        settingsPresenter.appendCheckedCategory(getContext().getString(R.string.vot_lively_voice), votToggles);
+        settingsPresenter.appendRadioCategory(getContext().getString(R.string.vot_original_volume),
+                AppDialogUtil.createVotOriginalVolumeCategory(getContext()).options);
+        settingsPresenter.appendRadioCategory(getContext().getString(R.string.vot_translation_volume),
+                AppDialogUtil.createVotTranslationVolumeCategory(getContext()).options);
+    }
+
     private void appendPlayerButtonsCategory(AppDialogPresenter settingsPresenter) {
         List<OptionItem> options = new ArrayList<>();
 
         for (int[] pair : new int[][] {
                 {R.string.auto_frame_rate, PlayerTweaksData.PLAYER_BUTTON_AFR},
                 {R.string.action_sound_off, PlayerTweaksData.PLAYER_BUTTON_SOUND_OFF},
+                {R.string.action_voice_translate, PlayerTweaksData.PLAYER_BUTTON_VOICE_TRANSLATE},
                 {R.string.video_rotate, PlayerTweaksData.PLAYER_BUTTON_VIDEO_ROTATE},
                 {R.string.video_flip, PlayerTweaksData.PLAYER_BUTTON_VIDEO_FLIP},
                 {R.string.open_chat, PlayerTweaksData.PLAYER_BUTTON_CHAT},

@@ -1117,6 +1117,13 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
     }
 
     @Override
+    public void setVoiceOverMix(boolean enabled, float originalVolumeMultiplier) {
+        if (mExoPlayerController != null) {
+            mExoPlayerController.setVoiceOverMix(enabled, originalVolumeMultiplier);
+        }
+    }
+
+    @Override
     public float getVolume() {
         return mExoPlayerController.getVolume();
     }
@@ -1321,6 +1328,13 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
     public void setButtonState(int buttonId, int buttonState) {
         if (mPlayerGlue != null) {
             mPlayerGlue.setButtonState(buttonId, buttonState);
+        }
+    }
+
+    @Override
+    public void updateVoiceTranslatePendingEta(int remainingTimeSec) {
+        if (mPlayerGlue != null) {
+            mPlayerGlue.updateVoiceTranslatePendingEta(remainingTimeSec);
         }
     }
 
