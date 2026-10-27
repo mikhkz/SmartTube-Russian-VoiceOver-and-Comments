@@ -1,14 +1,14 @@
 {
   "package": {
-    "downloadUrl": "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_universal.apk",
+    "downloadUrl": "https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_universal.apk",
     "downloadUrlList_armeabi-v7a": [
-      "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_armeabi-v7a.apk"
+      "https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_armeabi-v7a.apk"
     ],
     "downloadUrlList_arm64-v8a": [
-      "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_arm64-v8a.apk"
+      "https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_arm64-v8a.apk"
     ],
     "downloadUrlList_x86": [
-      "https://github.com/mikhkz/SmartTube/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_x86.apk"
+      "https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/download/v32.68-vot.1/SmartTube_vot_32.68-vot.1_x86.apk"
     ]
   },
   "32.68-vot.1": {

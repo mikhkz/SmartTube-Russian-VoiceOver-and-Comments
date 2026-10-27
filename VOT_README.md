@@ -10,8 +10,8 @@
 как в настройках подмодуля SharedModules. Gradle 7.5 запускается через wrapper.
 
 ```sh
-git clone --recurse-submodules https://github.com/mikhkz/SmartTube.git
-cd SmartTube
+git clone --recurse-submodules https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments.git
+cd SmartTube-Russian-VoiceOver-and-Comments
 printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
 bash gradlew --no-daemon --max-workers=2 :smarttubetv:assembleStvotDebug
 bash gradlew --no-daemon --max-workers=2 :common:testStstableDebugUnitTest --tests 'com.liskovsoft.smartyoutubetv2.common.vot.*'

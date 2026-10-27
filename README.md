@@ -1,13 +1,13 @@
 <img src="images/vot/app-logo.png" width="96" height="96" alt="Логотип SmartTube VOT">
 
-# SmartTube Russian Voice Over
+# SmartTube Russian Voice Over & Comments
 
 Русская озвучка видео и перевод комментариев в SmartTube для Android TV.
 Независимый форк SmartTube со встроенным Яндекс VOT; на телевизоре приложение
 называется **SmartTube VOT**.
 
-**[Скачать APK](https://github.com/mikhkz/SmartTube/releases/latest)** ·
-[Сообщить об ошибке](https://github.com/mikhkz/SmartTube/issues)
+**[Скачать APK](https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/latest)** ·
+[Сообщить об ошибке](https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/issues)
 
 Основа — **SmartTube 32.68 Stable**. Нативный клиент перевода обновлён по
 **VOT 1.12.3 / vot.js 3.2.0**, компонент Яндекса **26.10.0.1796**.
@@ -28,7 +28,7 @@
 
 ## Установка
 
-1. Откройте [последний выпуск](https://github.com/mikhkz/SmartTube/releases/latest).
+1. Откройте [последний выпуск](https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/latest).
 2. Скачайте `SmartTube_vot_32.68-vot.1_universal.apk`. Если знаете архитектуру
    устройства, можно выбрать меньший APK: `armeabi-v7a`, `arm64-v8a` или `x86`.
 3. Установите APK на Android TV или приставку и откройте **SmartTube VOT**.

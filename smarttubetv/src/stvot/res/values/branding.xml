@@ -2,9 +2,9 @@
 <resources>
     <string name="app_name" translatable="false">SmartTube VOT</string>
     <string name="browse_title" translatable="false">SmartTube VOT</string>
-    <string name="releases_url" translatable="false">https://github.com/mikhkz/SmartTube/releases</string>
-    <string name="sources_url" translatable="false">https://github.com/mikhkz/SmartTube</string>
+    <string name="releases_url" translatable="false">https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases</string>
+    <string name="sources_url" translatable="false">https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments</string>
     <string-array name="update_urls">
-        <item>https://github.com/mikhkz/SmartTube/releases/latest/download/smarttube-vot.json</item>
+        <item>https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/latest/download/smarttube-vot.json</item>
     </string-array>
 </resources>
