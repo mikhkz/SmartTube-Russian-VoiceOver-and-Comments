@@ -1,19 +1,17 @@
+[Русский](README.md) | [English](README_EN.md)
+
 <img src="images/vot/app-logo.png" width="96" height="96" alt="Логотип SmartTube VOT">
 
 # SmartTube Russian Voice Over & Comments
 
 ![Кнопка «Закадровый перевод» в плеере SmartTube VOT: стрелка указывает на значок с наушниками](images/vot/voice-over-button.png)
 
-**RU:** Русская озвучка видео и перевод комментариев и ответов на русский
+Русская озвучка видео и перевод комментариев и ответов на русский
 в SmartTube для Android TV. Независимый форк со встроенным Яндекс VOT;
 на телевизоре приложение называется **SmartTube VOT**.
 
-**EN:** Russian video voice-over and translation of comments and replies into
-Russian in SmartTube for Android TV. An independent fork with built-in Yandex VOT;
-the TV app is named **SmartTube VOT**.
-
-**[Скачать APK / Download APK](https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/latest)** ·
-[Сообщить об ошибке / Report an issue](https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/issues)
+**[Скачать APK](https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/releases/latest)** ·
+[Сообщить об ошибке](https://github.com/mikhkz/SmartTube-Russian-VoiceOver-and-Comments/issues)
 
 Основа — **SmartTube 32.68 Stable**. Нативный клиент перевода обновлён по
 **VOT 1.12.3 / vot.js 3.2.0**, компонент Яндекса **26.10.0.1796**.
